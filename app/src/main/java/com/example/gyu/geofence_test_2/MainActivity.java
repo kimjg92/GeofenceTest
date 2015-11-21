@@ -22,7 +22,6 @@ public class MainActivity extends FragmentActivity {
 
 
     GoogleMap map;
-    SimpleGeofence geofence;
 
     private static final long SECONDS_PER_HOUR = 60;
     private static final long MILLISECONDS_PER_SECOND = 1000;
@@ -31,6 +30,7 @@ public class MainActivity extends FragmentActivity {
             GEOFENCE_EXPIRATION_IN_HOURS *
                     SECONDS_PER_HOUR *
                     MILLISECONDS_PER_SECOND;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,16 +45,25 @@ public class MainActivity extends FragmentActivity {
                         //.tilt( 50F) // viewing angle z축 회전
                         .build();
         // use GooggleMap mMap to move camera into position
+
+
         map.animateCamera(CameraUpdateFactory.newCameraPosition(INIT));
+        GeofenceManager geofenceManager = new GeofenceManager(map);
+        geofenceManager.addGeofenceList(geofenceManager.CreateGeofence("1", 37.5545, 126.971, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER));
+        geofenceManager.addGeofenceList(geofenceManager.CreateGeofence("2", 37.55451245, 126.97244883, GEOFENCE_EXPIRATION_TIME, Geofence.GEOFENCE_TRANSITION_ENTER));
+        geofenceManager.addMarkerForFence();
+
+
+
         //toggleView(map); <- 위성사진으로 바꿔줌
-        geofence = new SimpleGeofence(
+        /*geofence = new SimpleGeofence(
                 "1",  // 앱 내에서의 지오펜스 식별자
                 37.5545, //위도
                 126.971, //경도
                 20,//반지름
                 GEOFENCE_EXPIRATION_TIME,
                 Geofence.GEOFENCE_TRANSITION_ENTER);// This geofence records only entry transitions
-        addMarkerForFence(geofence);
+        addMarkerForFence(geofence);*/
 
 
     }

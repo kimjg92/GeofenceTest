@@ -13,6 +13,8 @@ public class SimpleGeofence {
     private final float mRadius;
     private long mExpirationDuration;
     private int mTransitionType;
+    private String MarkerTitle;
+    private String MarkerSubTitle;
 
     /**
      * @param geofenceId The Geofence's request ID
@@ -30,6 +32,8 @@ public class SimpleGeofence {
         this.mRadius = radius;
         this.mExpirationDuration = expiration;
         this.mTransitionType = transition;
+        this.MarkerSubTitle = "default";
+        this.MarkerTitle = "default";
     }
     // Instance field getters
     public String getId() {
@@ -50,6 +54,10 @@ public class SimpleGeofence {
     public int getTransitionType() {
         return mTransitionType;
     }
+    public String getMarkerTitle(){return this.MarkerTitle;}
+    public String getMarkerSubTitle(){return  this.MarkerSubTitle;}
+    public void setMarkerTitle(String string){this.MarkerTitle = string;}
+    public void setMarkerSubTitle(String string){this.MarkerSubTitle = string;}
     /**
      * Creates a Location Services Geofence object from a
      * SimpleGeofence.
