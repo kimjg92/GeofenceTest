@@ -1,8 +1,12 @@
 package com.example.gyu.geofence_test_2;
 
+
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by GYU on 2015-11-21.
  */
-public class GeofenceManager {
+public class GeofenceManager extends AppCompatActivity{
     /*
     private static final long SECONDS_PER_HOUR = 60;
     private static final long MILLISECONDS_PER_SECOND = 1000;
@@ -29,9 +33,17 @@ public class GeofenceManager {
     LatLng latLng;
     GoogleMap map;
 
-    public GeofenceManager (GoogleMap Map){
+    // BitmapDrawable icon_drawable = (BitmapDrawable) getResources().getDrawable(R.drawable.remindme);
+    Bitmap icon;
+    int icon_height;
+    int icon_width;
+
+    public GeofenceManager (GoogleMap Map, Bitmap icon){
         map = Map; // Geofence를 띄울 map Fragment를 받아옴
-        radius = 20.0f; // 기본 값을 20으로 설정
+        radius = 100.0f; // 기본 값을 20으로 설정
+        this.icon = icon;
+        icon_height = icon.getHeight();
+        icon_width = icon.getWidth();
     }
 
     public SimpleGeofence CreateGeofence (String geofenceID, double latitude, double longitude, long expiration, int transition){
@@ -58,19 +70,22 @@ public class GeofenceManager {
     }
 
     public void addMarkerForFence(){
+
+        Bitmap halfsize = Bitmap.createScaledBitmap(icon, icon_width / 15, icon_height / 15,false);
         for(int i = 0 ; i < GeofenceList.size() ; i ++){
             if(GeofenceList.get(i) == null){
                 // display en error message and return
                 return;
             }
             map.addMarker( new MarkerOptions()
-                    .position( new LatLng(GeofenceList.get(i).getLatitude(), GeofenceList.get(i).getLongitude()) )
-                    .title("Fence " + GeofenceList.get(i).getId()) // 지오펜스 중심점에 표시할 핀셋의 이름
-                    .snippet("Radius: " + radius) ).showInfoWindow(); // 핀셋의 부가설명
+                    .icon(BitmapDescriptorFactory.fromBitmap(halfsize))
+                    .position(new LatLng(GeofenceList.get(i).getLatitude(), GeofenceList.get(i).getLongitude()))
+                    .title(GeofenceList.get(i).getId())).showInfoWindow();// 지오펜스 중심점에 표시할 핀셋의 이름
+            //.snippet("Radius: " + radius)).showInfoWindow(); // 마커의 부가설명
 
 //Instantiates a new CircleOptions object +  center/radius
             CircleOptions circleOptions = new CircleOptions()
-                    .center( new LatLng(GeofenceList.get(i).getLatitude(), GeofenceList.get(i).getLongitude()) )
+                    .center(new LatLng(GeofenceList.get(i).getLatitude(), GeofenceList.get(i).getLongitude()))
                     .radius(radius) // 기존엔 .radius(GeofenceList.get(i).getRadius()) 였지만 GeofenceManager에서 일괄적인 반지름을 부여하고 관리하기위해 변경
                     .fillColor(0x40ff0000)
                     .strokeColor(Color.TRANSPARENT)
@@ -82,6 +97,19 @@ public class GeofenceManager {
         }
 
 
+    }
+
+    public void markUserLocation(double lat, double lng){
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(lat, lng))
+                .title("내위치")).showInfoWindow();
+    }
+
+    public void refreshMap (double lat, double lng){
+        map.clear();
+        addMarkerForFence();
+        System.out.println("lat : " + lat + " / long : " + lng);
+        markUserLocation(lat,lng);
     }
 
 }
